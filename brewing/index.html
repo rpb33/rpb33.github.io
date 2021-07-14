@@ -13,8 +13,40 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Lato", sans-serif}
 .w3-bar,h1,button {font-family: "Montserrat", sans-serif}
 .fa-anchor,.fa-coffee {font-size:200px}
 
-img {
-  object-fit: contain;
+* {box-sizing: border-box;}
+
+.container {
+  position: relative;
+  width: 100%;
+}
+
+.image {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.overlay {
+  position: absolute; 
+  bottom: 0; 
+  background: rgb(0, 0, 0);
+  background: rgba(0, 0, 0, 0.5); /* Black see-through */
+  color: #f1f1f1; 
+  width: 100%;
+  transition: .5s ease;
+  opacity:0;
+  color: white;
+  font-size: 20px;
+  padding: 20px;
+  text-align: center;
+}
+
+.container:hover .overlay {
+  opacity: 1;
+}
+
+.grid-container {
+  grid-gap: 50px;
 }
 
 </style>
@@ -35,61 +67,76 @@ img {
 
 <!-- Header -->
 <header class="w3-container w3-blue w3-center" style="padding:64px 16px">
-  <h1 class="w3-margin w3-jumbo">Brewing</h1>
-  <p class="w3-xlarge">A selection of diversions</p>
-  <a href="http://www.cam.ac.uk" target="_blank" class="w3-button w3-black w3-padding-large w3-large w3-margin-top">A button</a>
+  <h1 class="w3-margin w3-jumbo">Recipes</h1>
+  <p class="w3-xlarge">Click to explore</p>
 </header>
 
-<!-- First Grid -->
+<!-- Beer label grid -->
+<div class="w3-row w3-row-padding w3-light-grey w3-container">
 
-<div class="w3-row-padding w3-light-grey w3-padding-64 w3-container">
-
-</div>
-
-
-
-<!-- Second Grid -->
-<div class="w3-row w3-row-padding w3-light-grey w3-padding-32 w3-container">
-  <div class="w3-col s6 m4 l4"><img src="img/labels/1_pandemic_IPA.png" style="width:100%"></div>
-  <div class="w3-col s6 m4 l4"><img src="img/labels/2_Zombie_Pony.png" style="width:100%"></div>
-  <div class="w3-col s6 m4 l4"><img src="img/labels/3_Third_wave.png" style="width:100%"></div>
-  <div class="w3-col s6 m4 l4"><img src="img/labels/4_NEIPA.png" style="width:100%"></div>
-  <div class="w3-col s6 m4 l4"><img src="img/labels/5_Sour.png" style="width:100%"></div>
-  <div class="w3-col s6 m4 l4"><img src="img/labels/7_Little_grey_cell_killer.png" style="width:100%"></div>
-</div>
-
-<!-- Third Grid -->
-<div class="w3-row-padding w3-padding-64 w3-container">
-    <div class="w3-content">
-      <div class="w3-rest">
-        <h1>Lorem Ipsum 3</h1>
-        <h5 class="w3-padding-32">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</h5>
-  
-        <p class="w3-text-grey">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Excepteur sint
-          occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-          laboris nisi ut aliquip ex ea commodo consequat.</p>
-      </div>
+  <div class="w3-col s12 m6 l4 w3-padding-16">
+    <div class="container">
+      <a href="#">
+        <img src="img/labels/1_pandemic_IPA.png" alt="1_pandemic_IPA" class="image">
+        <div class="overlay"><b>Pandemic IPA</b><br><em>IPA</em></div>
+      </a>
     </div>
   </div>
 
-  <!-- Fourth Grid -->
-<div class="w3-row-padding w3-padding-64 w3-light-grey w3-container">
-    <div class="w3-content">
-      <div class="w3-twothird">
-        <h1>Lorem Ipsum 4</h1>
-        <h5 class="w3-padding-32">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</h5>
-  
-        <p class="w3-text-grey">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Excepteur sint
-          occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-          laboris nisi ut aliquip ex ea commodo consequat.</p>
-      </div>
+
+  <div class="w3-col s12 m6 l4 w3-padding-16">
+    <div class="container">
+      <a href="#">
+        <img src="img/labels/2_Zombie_Pony.png" alt="2_Zombie_Pony" class="image">
+        <div class="overlay"><b>Zombie Pony</b><br><em>American IPA</em></div>
+      </a>
+    </div>
+  </div>  
+
+
+  <div class="w3-col s12 m6 l4 w3-padding-16">
+    <div class="container">
+      <a href="#">
+        <img src="img/labels/3_Third_wave.png" alt="3_Third_wave" class="image">
+        <div class="overlay"><b>Third Wave</b><br><em>Belgian Tripel</em></div>
+      </a>
     </div>
   </div>
 
+
+  <div class="w3-col s12 m6 l4 w3-padding-16">
+    <div class="container">
+      <a href="#">
+          <img src="img/labels/4_NEIPA.png" alt="4_NEIPA" class="image">
+          <div class="overlay"><b>IMP0ST3R IPA</b><br><em>NEIPA</em></div>
+        </a>
+    </div>
+  </div>
+
+
+  <div class="w3-col s12 m6 l4 w3-padding-16">
+    <div class="container">
+      <a href="#">
+        <img src="img/labels/5_Sour.png" alt="5_Sour" class="image">
+        <div class="overlay"><b>Lockdown Lambic</b><br><em>Lambic</em></div>
+      </a>
+    </div>
+  </div>
+
+
+  <div class="w3-col s12 m6 l4 w3-padding-16">
+    <div class="container">
+      <a href="#">
+        <img src="img/labels/7_Little_grey_cell_killer.png" alt="7_Little_grey_cell_killer" class="image">
+        <div class="overlay"><b>Little Grey Cell Killer</b><br><em>Belgian Tripel</em></div>
+      </a>
+    </div>
+  </div>
+  
+</div>
 
 <!-- Footer -->
 <div id="footer"></div>
-
 
 </body>
 </html>
