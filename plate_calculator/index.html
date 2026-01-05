@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Metric Plate Calculator - 2026 Edition</title>
+    <style>
+        /* General layout and typography */
+        body { font-family: sans-serif; padding: 20px; max-width: 600px; line-height: 1.4; color: #333; }
+        .input-group { margin-bottom: 15px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; }
+        input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        
+        /* Action button styling */
+        button { width: 100%; padding: 12px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; margin-bottom: 20px; }
+        button:hover { background: #218838; }
+        
+        /* Responsive grid for the four intensity cards */
+        .results-container { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; display: none; }
+        .calc-card { padding: 15px; background: #f8f9fa; border: 1px solid #ddd; border-radius: 4px; }
+        .calc-card h3 { margin-top: 0; color: #28a745; font-size: 1.1em; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+        
+        /* List and total text styling */
+        ul { padding-left: 20px; margin: 10px 0; font-size: 0.9em; }
+        .total-row { font-weight: bold; font-size: 0.95em; border-top: 1px solid #eee; padding-top: 8px; color: #555; }
+    </style>
+</head>
+<body>
+
+    <h2>Weight Plate Calculator</h2>
+    
+    <!-- User inputs for Bar and Target weight -->
+    <div class="input-group">
+        <label>Barbell Weight (kg):</label>
+        <input type="number" id="barWeight" value="17" step="0.1">
+    </div>
+
+    <div class="input-group">
+        <label>Target Total Weight (kg):</label>
+        <input type="number" id="targetWeight" placeholder="Enter target (e.g. 80)" step="0.001">
+    </div>
+
+    <button onclick="calculateAll()">Calculate Loads</button>
+
+    <!-- Results display area divided into four intensity scenarios -->
+    <div id="resultsWrapper" class="results-container">
+        <div class="calc-card">
+            <h3>50% Intensity</h3>
+            <ul id="list50"></ul>
+            <div id="total50" class="total-row"></div>
+        </div>
+        <div class="calc-card">
+            <h3>70% Intensity</h3>
+            <ul id="list70"></ul>
+            <div id="total70" class="total-row"></div>
+        </div>
+        <div class="calc-card) ">
+            <h3>90% Intensity</h3>
+            <ul id="list90"></ul>
+            <div id="total90" class="total-row"></div>
+        </div>
+         <div class="calc-card">
+            <h3>100% Target</h3>
+            <ul id="list100"></ul>
+            <div id="total100" class="total-row"></div>
+        </div>
+    </div>
+
+    <script>
+        // Raw CSV data representing available plate sizes and total quantities
+        const csvData = `weight_kg,total_quantity
+0.115,2
+0.230,2
+0.350,2
+0.460,2
+1.25,4
+2.5,6
+5,4
+10,4
+15,2
+20,2`;
+
+        // Process CSV string into sorted inventory objects (Heaviest plates first for greedy logic)
+        const inventory = csvData.trim().split('\n').slice(1).map(line => {
+            const [weight, qty] = line.split(',');
+            return { weight: parseFloat(weight), qty: parseInt(qty) };
+        }).sort((a, b) => b.weight - a.weight);
+
+        /**
+         * Logic to determine plate requirements for a specific target weight.
+         * Uses a "Greedy Algorithm" limited by inventory quantities.
+         */
+        function solveForWeight(target, bar) {
+            // Ensure target is never lighter than the bar itself
+            const effectiveTarget = Math.max(target, bar);
+            let remainingSide = (effectiveTarget - bar) / 2;
+            let platesUsed = [];
+            let sideTotal = 0;
+
+            inventory.forEach(plate => {
+                // We calculate per side, so we need plates in pairs
+                const pairsAvailable = Math.floor(plate.qty / 2);
+                if (pairsAvailable > 0) {
+                    // Use epsilon offset to prevent floating point floor errors
+                    let needed = Math.floor((remainingSide + 0.000001) / plate.weight);
+                    let taken = Math.min(needed, pairsAvailable);
+                    
+                    if (taken > 0) {
+                        platesUsed.push({ w: plate.weight, count: taken });
+                        sideTotal += (taken * plate.weight);
+                        remainingSide -= (taken * plate.weight);
+                    }
+                }
+            });
+            return { plates: platesUsed, total: (sideTotal * 2) + bar };
+        }
+
+        /**
+         * Main execution function triggered by the button.
+         * Handles UI updates and calculation for all four percentages.
+         */
+        function calculateAll() {
+            const targetInput = document.getElementById('targetWeight').value;
+            const target = parseFloat(targetInput);
+            const bar = parseFloat(document.getElementById('barWeight').value);
+
+            // Validation check
+            if (!targetInput || isNaN(target) || isNaN(bar)) {
+                alert("Please enter a valid target weight.");
+                return;
+            }
+
+            // Define the intensity steps to calculate
+            const scenarios = [
+                { id: '50',  val: target * 0.5 },
+                { id: '70',  val: target * 0.7 },
+                { id: '90',  val: target * 0.9 },
+                { id: '100', val: target }
+            ];
+
+            // Loop through scenarios and update the DOM
+            scenarios.forEach(s => {
+                const result = solveForWeight(s.val, bar);
+                const listEl = document.getElementById(`list${s.id}`);
+                const totalEl = document.getElementById(`total${s.id}`);
+
+                // Generate list items for the plates needed per side
+                listEl.innerHTML = result.plates.length > 0 
+                    ? result.plates.map(p => `<li>${p.count} x ${p.w} kg</li>`).join('')
+                    : "<li>Bar only</li>";
+                
+                // Display final rounded total weight (2 decimal places)
+                totalEl.innerText = `Actual: ${result.total.toFixed(2)} kg`;
+            });
+
+            // Reveal results container
+            document.getElementById('resultsWrapper').style.display = 'grid';
+        }
+    </script>
+</body>
+</html>
